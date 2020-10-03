@@ -1,6 +1,6 @@
 let data = [];
 
-let start, end;
+let start
 
 function analyze() {
 	resetDisplay();
@@ -41,8 +41,7 @@ function analyze() {
 
 		for (let i = 0; i < palette.length; i++) document.getElementById("blocksHolder").innerHTML += "<li>" + newBlockCount[i] + " x " + palette[i] + "</li>";
 
-		end = new Date().getTime();
-		console.log(end - start);
+		console.log(new Date().getTime() - start);
 	}
 }
 
