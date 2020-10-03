@@ -1,31 +1,44 @@
 let data = [];
 
-let start
-
 function analyze() {
 	resetDisplay();
 
-	let start = new Date().getTime();
+	let timer = new Date().getTime();
+	let start = timer;
 
 	let file = document.getElementById("filein").files[0];
 	let fr = new FileReader();
 	fr.readAsArrayBuffer(file);
 	fr.onload = function(e) {
 		data = Array.from(new Int8Array(e.target.result));
-		document.getElementById("data").style.display = "block";
-		hexDump(data);
+		//console.log("prepared file in " + (new Date().getTime() - timer) + "ms");
+		timer = new Date().getTime();
+
+		if (document.getElementById("showhexdump").checked) {
+			document.getElementById("data").style.display = "block";
+			hexDump(data);
+			//console.log("showed hex dump in  " + (new Date().getTime() - timer) + "ms");
+			timer = new Date().getTime();
+		}
 
 		let size = getSize();
+		//console.log("found size in " + (new Date().getTime() - timer) + "ms");
+		timer = new Date().getTime();
 
 		let palette = getPalette();
+		//console.log("found palette in " + (new Date().getTime() - timer) + "ms");
+		timer = new Date().getTime();
+
 		let blockCount = getBlockCount(palette.length, size[0]*size[1]*size[2]);
+		//console.log("found block count in " + (new Date().getTime() - timer) + "ms");
+		timer = new Date().getTime();
 
 		let repeated = []
 
 		for (i = 0; i < palette.length; i++)
 			for (j = i+1; j < palette.length; j++)
 				if (palette[i] == palette[j] && !repeated.includes(i)) {
-					console.log(i + " " + palette[i] + " " + palette[j] + " " + blockCount[i] + " " + blockCount[j]);
+					//console.log(i + " " + palette[i] + " " + palette[j] + " " + blockCount[i] + " " + blockCount[j]);
 					blockCount[i] += blockCount[j];
 					repeated.push(j);
 				}
@@ -34,6 +47,8 @@ function analyze() {
 
 		let newBlockCount = []
 		for (i = 0; i < blockCount.length; i++) if (!repeated.includes(i)) newBlockCount.push(blockCount[i]);
+		//console.log("fixed block count in " + (new Date().getTime() - timer) + "ms");
+		timer = new Date().getTime();
 
 		document.getElementById("properties").style.display = "block";
 
@@ -41,7 +56,7 @@ function analyze() {
 
 		for (let i = 0; i < palette.length; i++) document.getElementById("blocksHolder").innerHTML += "<li>" + newBlockCount[i] + " x " + palette[i] + "</li>";
 
-		console.log(new Date().getTime() - start);
+		//console.log("All done in " + (new Date().getTime() - start) + "ms");
 	}
 }
 
@@ -118,7 +133,7 @@ function getBlockCount(states, blocks) {
 	let blockCount = [];
 	for (i = 0; i < states; i++) blockCount.push(0);
 
-	let ptr = 84;
+	let ptr = 83;
 	for (n = 0; n < blocks; n++) {
 		let target = "state";
 		for (let i = ptr; i < data.length; i++) {
