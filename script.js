@@ -54,7 +54,10 @@ function analyze() {
 
 		document.getElementById("sizeHolder").innerHTML = size[0] + "x" + size[1] + "x" + size[2] + "<br>";
 
-		for (let i = 0; i < palette.length; i++) document.getElementById("blocksHolder").innerHTML += "<li>" + newBlockCount[i] + " x " + palette[i] + "</li>";
+		for (let i = 0; i < palette.length; i++) {
+			let blockName = palette[i].startsWith("minecraft:") ? blockDict[palette[i].split(":")[1]] : palette[i];
+			document.getElementById("blocksHolder").innerHTML += "<li>" + newBlockCount[i] + " x " + blockName + "</li>";
+		}
 
 		//console.log("All done in " + (new Date().getTime() - start) + "ms");
 	}
